@@ -2,6 +2,9 @@ import express from 'express';
 import dotenv from 'dotenv';
 import { createServer } from 'http';
 import WebSocket from 'ws';
+import cors from 'cors';
+import authRoutes from './routes/auth';
+import { authenticateToken } from './middleware/auth';
 
 dotenv.config();
 
@@ -9,11 +12,16 @@ const app = express();
 const server = createServer(app);
 const wss = new WebSocket.Server({ server });
 
+// Middleware
+app.use(cors());
 app.use(express.json());
 
-// Basic health check endpoint
-app.get('/health', (req, res) => {
-  res.json({ status: 'healthy' });
+// Routes
+app.use('/api/auth', authRoutes);
+
+// Protected route example
+app.get('/api/protected', authenticateToken, (req, res) => {
+  res.json({ message: 'Access granted to protected route' });
 });
 
 // WebSocket connection handling

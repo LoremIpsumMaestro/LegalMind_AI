@@ -6,3 +6,6 @@ huggingface_hub
 transformers
 torch
 numpy
+accelerate  # For optimized model loading
+bitsandbytes  # For quantization support
+sentencepiece  # For tokenization

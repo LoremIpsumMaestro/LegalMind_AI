@@ -3,12 +3,20 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCase } from '@/hooks/useCase';
 import { Button } from '@/components/ui/button';
 import { CaseDetails } from '@/components/cases/CaseDetails';
+import { CaseNotes } from '@/components/cases/CaseNotes';
 
 export default function CaseViewPage() {
   const router = useRouter();
   const { id } = router.query;
   const { user, loading: authLoading } = useAuth();
-  const { caseData, loading, error, updateCase, deleteCase } = useCase(id as string);
+  const { 
+    caseData, 
+    loading, 
+    error, 
+    updateCase, 
+    deleteCase, 
+    fetchCase 
+  } = useCase(id as string);
 
   if (authLoading || loading) {
     return (
@@ -84,34 +92,11 @@ export default function CaseViewPage() {
           </div>
 
           <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold">Case Notes</h2>
-              <Button>
-                Add Note
-              </Button>
-            </div>
-            {caseData.case_notes && caseData.case_notes.length > 0 ? (
-              <div className="grid gap-4">
-                {caseData.case_notes.map((note) => (
-                  <div
-                    key={note.id}
-                    className="border rounded-lg p-4 hover:shadow-md transition-shadow"
-                  >
-                    <p className="text-gray-600 mb-2">{note.content}</p>
-                    <div className="flex justify-between items-center text-sm text-gray-500">
-                      <span>{new Date(note.created_at).toLocaleString()}</span>
-                      {note.is_private && (
-                        <span className="text-yellow-600">Private</span>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="border rounded-lg p-8 text-center text-gray-500">
-                No notes added yet
-              </div>
-            )}
+            <CaseNotes
+              caseId={caseData.id}
+              notes={caseData.case_notes || []}
+              onNoteAdded={fetchCase}
+            />
           </div>
         </div>
 

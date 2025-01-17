@@ -1,11 +1,13 @@
-python-dotenv>=1.0.0
-requests>=2.28.0
-psutil>=5.9.0
-schedule>=1.2.0
-huggingface_hub
-transformers
-torch
-numpy
-accelerate  # For optimized model loading
-bitsandbytes  # For quantization support
-sentencepiece  # For tokenization
+transformers==4.37.2
+torch==2.1.2
+python-dotenv==1.0.0
+sentencepiece==0.1.99
+accelerate==0.25.0
+bitsandbytes==0.41.3
+huggingface_hub==0.20.3
+
+# Mistral-specific dependencies
+mistralai==0.1.3
+
+# Optional: for better performance
+optimum==1.16.1

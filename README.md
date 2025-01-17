@@ -20,66 +20,152 @@ LegalMind AI is a sophisticated legal assistance platform designed for modern la
    cd LegalMind_AI
    ```
 
-2. **Set Up Environment Variables**
+2. **Install Dependencies**
    ```bash
-   # Copy the example env file
+   yarn install
+   ```
+
+3. **Set Up Environment Variables**
+   ```bash
    cp .env.example .env
    ```
    Update the following variables in your .env file:
    ```env
-   # Frontend
-   REACT_APP_API_URL=https://api.legalmind.ai
-   REACT_APP_WS_URL=wss://ws.legalmind.ai
-   REACT_APP_ENCRYPTION_KEY=${ENCRYPTION_KEY}
-
-   # Backend
-   NODE_ENV=development
-   PORT=3000
-   JWT_SECRET=${JWT_SECRET}
-   SUPABASE_URL=${SUPABASE_URL}
-   SUPABASE_KEY=${SUPABASE_KEY}
-   VECTOR_STORE_API_KEY=${VECTOR_STORE_KEY}
-   LLAMA2_MODEL_PATH=/opt/models/llama2
+   NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
    ```
 
-3. **Install Dependencies**
-   ```bash
-   # Install frontend dependencies
-   cd frontend
-   yarn install
-
-   # Install backend dependencies
-   cd ../backend
-   yarn install
-   ```
-
-4. **Set Up Database**
+4. **Database Setup**
    - Create a new Supabase project
-   - Run the database schema migrations:
+   - The database schema will be automatically created when you run the application for the first time
+   - You can manually run migrations using:
      ```bash
-     cd backend
      yarn migrate
      ```
 
-5. **Start Development Servers**
+5. **Development Workflow**
    ```bash
-   # Start backend server
-   cd backend
+   # Start the development server
    yarn dev
 
-   # In a new terminal, start frontend server
-   cd frontend
-   yarn dev
+   # Run tests
+   yarn test
+
+   # Run tests in watch mode
+   yarn test:watch
+
+   # Type checking
+   yarn type-check
+
+   # Linting
+   yarn lint
    ```
 
-6. **Access the Application**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:8000
+## Project Structure
+```
+├── src/
+│   ├── components/     # React components
+│   │   ├── ui/        # Shared UI components
+│   │   ├── layouts/   # Layout components
+│   │   └── forms/     # Form components
+│   ├── lib/           # Library code, utilities
+│   │   ├── database.ts    # Database service
+│   │   ├── auth.ts       # Authentication utilities
+│   │   └── api.ts        # API utilities
+│   ├── types/         # TypeScript type definitions
+│   │   ├── database.types.ts
+│   │   └── api.types.ts
+│   ├── hooks/         # Custom React hooks
+│   ├── pages/         # Next.js pages
+│   │   ├── api/       # API routes
+│   │   └── auth/      # Auth related pages
+│   ├── styles/        # CSS/SCSS styles
+│   └── __tests__/     # Test files
+├── public/            # Static files
+├── scripts/           # Build/deploy scripts
+└── docs/              # Documentation
+```
 
-### Docker Setup (Alternative)
+## Database Schema
+
+The application uses Supabase as the database with the following main tables:
+
+### Users
+- Stores user information and preferences
+- Integrated with Supabase Auth
+- Contains roles and permissions
+
+### Cases
+- Legal case information
+- Linked to users and documents
+- Tracks case status and history
+
+### Documents
+- Legal document storage
+- Vector embeddings for AI analysis
+- Version control and metadata
+
+### Conversations
+- AI interaction history
+- Context tracking
+- Linked to cases and documents
+
+## Testing
+
+The project uses Jest for testing. Test files are located in `src/__tests__/`.
+
+```bash
+# Run all tests
+yarn test
+
+# Run tests in watch mode
+yarn test:watch
+
+# Run tests with coverage
+yarn test --coverage
+```
+
+### Test Structure
+- Unit tests for utilities and hooks
+- Integration tests for API endpoints
+- Component tests using React Testing Library
+
+## Docker Setup
+
 ```bash
 # Build and run using Docker Compose
 docker-compose up --build
 ```
 
-[Rest of the existing README content...]
+## Security Considerations
+
+1. **Authentication**
+   - Supabase JWT-based authentication
+   - Role-based access control
+   - Secure session management
+
+2. **Data Protection**
+   - Row Level Security (RLS) policies
+   - Encrypted data storage
+   - Secure file handling
+
+3. **API Security**
+   - Rate limiting
+   - Request validation
+   - CORS configuration
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run tests
+5. Submit a pull request
+
+## License
+
+This project is proprietary and confidential.
+
+## Support
+
+For support, please contact the development team.

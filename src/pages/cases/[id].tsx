@@ -2,10 +2,12 @@ import { useRouter } from 'next/router';
 import { useAuth } from '@/hooks/useAuth';
 import { useCase } from '@/hooks/useCase';
 import { useDocuments } from '@/hooks/useDocuments';
+import { useParticipants } from '@/hooks/useParticipants';
 import { Button } from '@/components/ui/button';
 import { CaseDetails } from '@/components/cases/CaseDetails';
 import { CaseNotes } from '@/components/cases/CaseNotes';
 import { DocumentList } from '@/components/documents/DocumentList';
+import { ParticipantList } from '@/components/cases/ParticipantList';
 
 export default function CaseViewPage() {
   const router = useRouter();
@@ -20,10 +22,13 @@ export default function CaseViewPage() {
     fetchCase 
   } = useCase(id as string);
   const { 
-    isUploading,
     uploadDocument, 
     viewDocument 
   } = useDocuments(id as string);
+  const {
+    addParticipant,
+    removeParticipant
+  } = useParticipants(id as string);
 
   if (authLoading || loading) {
     return (
@@ -50,12 +55,33 @@ export default function CaseViewPage() {
   const handleDocumentUpload = async (data: any) => {
     try {
       await uploadDocument(data);
-      await fetchCase(); // Refresh case data to show new document
+      await fetchCase();
     } catch (error) {
       console.error('Error uploading document:', error);
-      // TODO: Add error handling UI
     }
   };
+
+  const handleAddParticipant = async (data: { email: string; role: string }) => {
+    try {
+      await addParticipant(data);
+      await fetchCase();
+    } catch (error) {
+      console.error('Error adding participant:', error);
+      throw error;
+    }
+  };
+
+  const handleRemoveParticipant = async (participantId: string) => {
+    try {
+      await removeParticipant(participantId);
+      await fetchCase();
+    } catch (error) {
+      console.error('Error removing participant:', error);
+      throw error;
+    }
+  };
+
+  const isOwner = caseData.user_id === user.id;
 
   return (
     <div className="container mx-auto py-8">
@@ -90,40 +116,12 @@ export default function CaseViewPage() {
           </div>
         </div>
 
-        <div className="space-y-6">
-          <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold">Case Participants</h2>
-            <Button>
-              Add Participant
-            </Button>
-          </div>
-          {caseData.case_participants && caseData.case_participants.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {caseData.case_participants.map((participant) => (
-                <div
-                  key={participant.id}
-                  className="border rounded-lg p-4 hover:shadow-md transition-shadow"
-                >
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className="font-medium">{participant.user_id}</p>
-                      <p className="text-sm text-gray-500">
-                        Role: {participant.role}
-                      </p>
-                    </div>
-                    <Button variant="outline" size="sm">
-                      Remove
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="border rounded-lg p-8 text-center text-gray-500">
-              No additional participants
-            </div>
-          )}
-        </div>
+        <ParticipantList
+          participants={caseData.case_participants || []}
+          onAdd={handleAddParticipant}
+          onRemove={handleRemoveParticipant}
+          isOwner={isOwner}
+        />
       </div>
     </div>
   );

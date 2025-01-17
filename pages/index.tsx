@@ -3,8 +3,8 @@ import React from 'react';
 export default function Home() {
   return (
     <div>
-      <h1>Welcome to LegalMind AI</h1>
-      <p>Your intelligent legal assistant is ready!</p>
+      <h1>LegalMind AI</h1>
+      <p>Votre assistant juridique intelligent, sécurisé et confidentiel</p>
     </div>
   );
 }

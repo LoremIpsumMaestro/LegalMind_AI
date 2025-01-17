@@ -23,7 +23,11 @@ export default function CaseViewPage() {
   } = useCase(id as string);
   const { 
     uploadDocument, 
-    viewDocument 
+    viewDocument,
+    versions,
+    fetchVersions,
+    uploadVersion,
+    viewVersion
   } = useDocuments(id as string);
   const {
     addParticipant,
@@ -58,6 +62,7 @@ export default function CaseViewPage() {
       await fetchCase();
     } catch (error) {
       console.error('Error uploading document:', error);
+      throw error;
     }
   };
 
@@ -77,6 +82,16 @@ export default function CaseViewPage() {
       await fetchCase();
     } catch (error) {
       console.error('Error removing participant:', error);
+      throw error;
+    }
+  };
+
+  const handleUploadVersion = async (documentId: string, data: any) => {
+    try {
+      await uploadVersion(documentId, data);
+      await fetchVersions(documentId);
+    } catch (error) {
+      console.error('Error uploading version:', error);
       throw error;
     }
   };
@@ -104,6 +119,10 @@ export default function CaseViewPage() {
               documents={caseData.documents || []}
               onUpload={handleDocumentUpload}
               onView={viewDocument}
+              onFetchVersions={fetchVersions}
+              onUploadVersion={handleUploadVersion}
+              onViewVersion={viewVersion}
+              versions={versions}
             />
           </div>
 

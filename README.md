@@ -1,73 +1,53 @@
 # LegalMind AI
 
-## Overview
-LegalMind AI is an advanced legal document analysis and processing toolkit leveraging state-of-the-art AI technologies.
+## 🚀 Project Overview
+Votre assistant juridique intelligent, sécurisé et confidentiel
 
-## Features
-- Hugging Face API Token Management
-- Comprehensive API Monitoring
-- Advanced Caching Mechanism
-- Robust Error Handling
-- Legal Document Processing
+## 🔬 Mistral AI Model Integration
 
-## Setup
+### Testing the Integration
 
-### Prerequisites
-- Python 3.8+
-- pip
+#### Prerequisites
+- Python 3.9+
+- Install dependencies: `pip install -r requirements.txt`
 
-### Installation
-1. Clone the repository
+#### Running Tests
+To run the comprehensive Mistral AI model integration tests:
+
 ```bash
-git clone https://github.com/LoremIpsumMaestro/LegalMind_AI.git
-cd LegalMind_AI
+# Run tests with coverage
+pytest tests/mistral_integration_test.py --cov=src
+
+# Detailed test output
+python -m tests.mistral_integration_test
 ```
 
-2. Create a virtual environment
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
-```
+#### Test Coverage
+The integration tests cover:
+- Model initialization
+- Text generation
+- Legal document analysis
+- Query response generation
+- Parameter variation testing
 
-3. Install dependencies
-```bash
-pip install -r requirements.txt
-```
+### Performance Considerations
+- Model: Mistral-7B-Instruct-v0.1
+- Quantization: Enabled for memory efficiency
+- Supports both CPU and CUDA devices
 
-4. Configure environment variables
-Create a `.env` file with your Hugging Face API tokens:
-```
-HUGGINGFACE_API_TOKENS=your_token1,your_token2
-```
+## 🛠 Troubleshooting
+- Ensure you have the latest dependencies
+- Check CUDA compatibility if using GPU
+- Verify Hugging Face access tokens if required
 
-## Usage
-```python
-from src.api_monitoring import HuggingFaceAPIWrapper
+## 📊 Test Scenarios
+1. Basic text generation
+2. Legal document summary
+3. Risk analysis
+4. Compliance checking
+5. Legal query responses
 
-# Initialize API wrapper
-api_wrapper = HuggingFaceAPIWrapper()
-
-# Perform legal document analysis
-result = api_wrapper.text_generation(
-    model='legal-bert-model',
-    prompt='Analyze contract terms:'
-)
-```
-
-## Modules
-- `src/api_monitoring`: API interaction tools
-- `src/utils`: Utility functions
-- `main.py`: Application entry point
-
-## Contributing
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
-## License
-[Specify your license]
-
-## Contact
-[Your contact information]
+## 🔍 Continuous Improvement
+- Ongoing performance benchmarking
+- Regular model updates
+- Domain-specific fine-tuning strategies

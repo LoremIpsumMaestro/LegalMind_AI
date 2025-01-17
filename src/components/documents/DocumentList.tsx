@@ -4,7 +4,10 @@ import { Button } from '@/components/ui/button';
 import { DocumentUpload } from './DocumentUpload';
 import { DocumentVersions } from './DocumentVersions';
 import { DocumentSearch, DocumentFilters } from './DocumentSearch';
+import { DocumentStats } from './DocumentStats';
+import { SortControls } from './SortControls';
 import { Document } from '@/hooks/useDocuments';
+import { sortDocuments, filterDocuments, SortField, SortOrder } from '@/utils/documentUtils';
 
 interface DocumentListProps {
   documents: Document[];
@@ -37,32 +40,13 @@ export function DocumentList({
       end: ''
     }
   });
+  const [sortField, setSortField] = useState<SortField>('created_at');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
 
   const filteredDocuments = useMemo(() => {
-    return documents.filter(doc => {
-      // Search term filter
-      const searchMatch = !filters.searchTerm || 
-        doc.title.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-        doc.document_type.toLowerCase().includes(filters.searchTerm.toLowerCase());
-
-      // Document type filter
-      const typeMatch = !filters.documentType || 
-        doc.document_type === filters.documentType;
-
-      // Status filter
-      const statusMatch = !filters.status || 
-        doc.status === filters.status;
-
-      // Date range filter
-      const docDate = new Date(doc.created_at);
-      const startMatch = !filters.dateRange.start || 
-        docDate >= new Date(filters.dateRange.start);
-      const endMatch = !filters.dateRange.end || 
-        docDate <= new Date(filters.dateRange.end);
-
-      return searchMatch && typeMatch && statusMatch && startMatch && endMatch;
-    });
-  }, [documents, filters]);
+    const filtered = filterDocuments(documents, filters);
+    return sortDocuments(filtered, sortField, sortOrder);
+  }, [documents, filters, sortField, sortOrder]);
 
   const handleUpload = async (data: any) => {
     try {
@@ -86,6 +70,7 @@ export function DocumentList({
 
   const handleSearch = (newFilters: DocumentFilters) => {
     setFilters(newFilters);
+    setSelectedDocumentId(null); // Close any open version panels
   };
 
   const resetSearch = () => {
@@ -98,6 +83,12 @@ export function DocumentList({
         end: ''
       }
     });
+    setSelectedDocumentId(null);
+  };
+
+  const handleSort = (field: SortField, order: SortOrder) => {
+    setSortField(field);
+    setSortOrder(order);
   };
 
   return (
@@ -109,10 +100,20 @@ export function DocumentList({
         </Button>
       </div>
 
+      <DocumentStats documents={documents} />
+
       <DocumentSearch
         onSearch={handleSearch}
         onReset={resetSearch}
       />
+
+      <div className="flex justify-end">
+        <SortControls
+          field={sortField}
+          order={sortOrder}
+          onSort={handleSort}
+        />
+      </div>
 
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded">
@@ -138,53 +139,51 @@ export function DocumentList({
           </Card.Content>
         </Card>
       ) : (
-        <div className="space-y-6">
-          <div className="grid gap-4">
-            {filteredDocuments.map((doc) => (
-              <Card key={doc.id} className="hover:shadow-md transition-shadow">
-                <Card.Content className="p-4">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="font-medium">{doc.title}</h3>
-                      <p className="text-sm text-gray-500">
-                        Type: {doc.document_type} | Status: {doc.status}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        Uploaded: {new Date(doc.created_at).toLocaleString()}
-                      </p>
-                    </div>
-                    <div className="flex space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleShowVersions(doc.id)}
-                      >
-                        Versions
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => onView(doc)}
-                      >
-                        View
-                      </Button>
-                    </div>
+        <div className="space-y-4">
+          {filteredDocuments.map((doc) => (
+            <Card key={doc.id} className="hover:shadow-md transition-shadow">
+              <Card.Content className="p-4">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="font-medium">{doc.title}</h3>
+                    <p className="text-sm text-gray-500">
+                      Type: {doc.document_type} | Status: {doc.status}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Uploaded: {new Date(doc.created_at).toLocaleString()}
+                    </p>
                   </div>
+                  <div className="flex space-x-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleShowVersions(doc.id)}
+                    >
+                      Versions
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onView(doc)}
+                    >
+                      View
+                    </Button>
+                  </div>
+                </div>
 
-                  {selectedDocumentId === doc.id && (
-                    <div className="mt-4 border-t pt-4">
-                      <DocumentVersions
-                        documentId={doc.id}
-                        versions={versions}
-                        onUploadVersion={(data) => onUploadVersion(doc.id, data)}
-                        onViewVersion={onViewVersion}
-                      />
-                    </div>
-                  )}
-                </Card.Content>
-              </Card>
-            ))}
-          </div>
+                {selectedDocumentId === doc.id && (
+                  <div className="mt-4 border-t pt-4">
+                    <DocumentVersions
+                      documentId={doc.id}
+                      versions={versions}
+                      onUploadVersion={(data) => onUploadVersion(doc.id, data)}
+                      onViewVersion={onViewVersion}
+                    />
+                  </div>
+                )}
+              </Card.Content>
+            </Card>
+          ))}
         </div>
       )}
     </div>

@@ -3,7 +3,7 @@ import logging
 from dotenv import load_dotenv
 
 from src.api_monitoring.token_manager import HuggingFaceTokenManager
-from src.llm_models.llama2_handler import Llama2ModelHandler
+from src.llm_models.mistral_handler import MistralModelHandler
 
 # Configure logging
 logging.basicConfig(
@@ -26,10 +26,10 @@ def main():
             tokens=os.getenv('HUGGINGFACE_API_TOKENS', '').split(',')
         )
 
-        # Initialize Llama2 Model
+        # Initialize Mistral Model
         try:
-            llama2_model = Llama2ModelHandler(
-                model_name='meta-llama/Llama-2-7b-chat-hf',
+            mistral_model = MistralModelHandler(
+                model_name='mistralai/Mistral-7B-Instruct-v0.1',
                 quantization=True  # Enable memory-efficient loading
             )
 
@@ -47,7 +47,7 @@ def main():
             """
 
             logger.info("Generating Legal Document Analysis:")
-            document_analysis = llama2_model.legal_document_analysis(
+            document_analysis = mistral_model.legal_document_analysis(
                 sample_contract, 
                 analysis_type='summary'
             )
@@ -56,7 +56,7 @@ def main():
             # Example 2: Legal Query Response
             legal_query = "What are the key considerations when drafting a non-compete clause?"
             logger.info("\nLegal Query Response:")
-            query_response = llama2_model.legal_query_response(
+            query_response = mistral_model.legal_query_response(
                 query=legal_query,
                 context="Technology startup employment agreement"
             )
@@ -68,7 +68,7 @@ def main():
                 "contract and proposing a resolution."
             )
             logger.info("\nCustom Text Generation:")
-            generated_texts = llama2_model.generate_text(
+            generated_texts = mistral_model.generate_text(
                 custom_prompt, 
                 max_length=300, 
                 temperature=0.6
@@ -77,7 +77,7 @@ def main():
                 logger.info(text)
 
         except Exception as model_error:
-            logger.error(f"Llama2 model initialization error: {model_error}")
+            logger.error(f"Mistral model initialization error: {model_error}")
             raise
 
     except Exception as setup_error:

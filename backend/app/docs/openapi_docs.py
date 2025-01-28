@@ -96,4 +96,3 @@ def custom_openapi() -> Dict:
     }
     
     return openapi_schema
-

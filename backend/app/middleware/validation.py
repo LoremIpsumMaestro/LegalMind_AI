@@ -1,9 +1,10 @@
-from fastapi import Request, HTTPException
+from fastapi import Request, HTTPException, Response
 from typing import Callable, Awaitable
 import re
 import json
 from pydantic import ValidationError
 import logging
+from fastapi.responses import JSONResponse
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +24,7 @@ class RequestValidationMiddleware:
             'filename': re.compile(r'^[\w\-. ]+$')
         }
 
-    async def __call__(self, request: Request, call_next: Callable[[Request], Awaitable]) -> Response:
+    async def __call__(self, request: Request, call_next: Callable[[Request], Awaitable[Response]]) -> Response:
         try:
             # Validate request size
             if request.headers.get('content-length'):

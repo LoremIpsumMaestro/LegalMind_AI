@@ -1,5 +1,21 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import AppLayout from '../components/AppLayout';
+import AppLayout from '../src/components/AppLayout';
 
-// Rest of the index page code...
+const Home: NextPage = () => {
+  return (
+    <>
+      <Head>
+        <title>LegalMind AI - Legal Assistant Interface</title>
+        <meta name="description" content="AI-powered legal assistant interface" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+
+      <main>
+        <AppLayout />
+      </main>
+    </>
+  );
+};
+
+export default Home;

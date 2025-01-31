@@ -8,7 +8,6 @@ An AI-powered legal assistant interface that helps legal professionals manage do
 - 📄 Document management system with search and organization
 - 🔍 Smart document analysis and summarization
 - 🛡️ Secure document handling
-- 🌙 Dark mode support
 - 📱 Responsive design
 
 ## Tech Stack

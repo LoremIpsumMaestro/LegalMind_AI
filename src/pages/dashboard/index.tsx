@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '@/hooks/useAuth';
-import { Button } from '@/components/ui/button';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { CasesList } from '@/components/cases/CasesList';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function DashboardPage() {
   const { user, loading, signOut } = useAuth();
@@ -16,8 +17,16 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        Loading...
+      <div className="flex flex-col space-y-4 p-8">
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-[200px]" />
+          <Skeleton className="h-4 w-[300px]" />
+        </div>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {[...Array(6)].map((_, i) => (
+            <Skeleton key={i} className="h-[200px] rounded-xl" />
+          ))}
+        </div>
       </div>
     );
   }
@@ -26,26 +35,17 @@ export default function DashboardPage() {
     return null;
   }
 
-  const handleSignOut = async () => {
-    await signOut();
-    router.push('/auth/login');
-  };
-
   return (
-    <div className="container mx-auto py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <div className="flex items-center gap-4">
-          <span className="text-gray-600">{user.email}</span>
-          <Button onClick={handleSignOut} variant="outline">
-            Sign Out
-          </Button>
-        </div>
-      </div>
-
+    <DashboardLayout user={user} signOut={signOut}>
       <div className="space-y-8">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Welcome back!</h1>
+          <p className="text-muted-foreground">
+            Here's an overview of your legal cases and activities
+          </p>
+        </div>
         <CasesList />
       </div>
-    </div>
+    </DashboardLayout>
   );
 }
